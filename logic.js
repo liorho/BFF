@@ -1,17 +1,20 @@
 const Game = function () {
-    // Consts for new Item
     const heightConst = 2;
     const leftConst = 90;
     const topConst = 60;
     const widthMinSize = 2;
     const widthMaxSize = 8;
-    const imgSrc = "img/burger.jpg";
-    const imgAlt = "Burger";
     const minTopGap = 13;
     const minLeftGap = 13;
-
-
-    let arrItems = []
+    
+    const imgAlt = "Burger"; // Enter Single Item Name!
+    const imgSrc = "img/burger.jpg";
+    const message = "Eat the Burgers!";
+    
+    let arrItems = [];
+    let level = 0;
+    let time = 0;
+    const timeLevelDiff = 2;
 
     const randomLeftPos = () => Math.random() * leftConst;
 
@@ -21,10 +24,9 @@ const Game = function () {
 
     const height = (width) => width * heightConst;
 
-    // Create Item
     const createItem = function (id) {
         let PositionLeft, PositionTop, error;
-        
+
         do {
             error = false;
             PositionLeft = randomLeftPos();
@@ -37,16 +39,9 @@ const Game = function () {
                 if (leftGap < minLeftGap && topGap < minTopGap) error = true;
             }
         } while (error);
-        
-        
-        // console.log(leftGap);
-        // console.log(topGap);
-        
-        let Id = id;  //figure this out
+        let Id = id;
         let Width = width(PositionTop);
         let Height = height(Width);
-        
-        
         let newItem = {
             id: Id,
             posLeft: PositionLeft,
@@ -59,40 +54,60 @@ const Game = function () {
         return newItem;
     }
 
+    const createArrayOfItems = function (level) {
+        arrItems = [];
+        for (let i = 0; i < level; i++) {
+            let newItem = createItem(i);
+            arrItems.push(newItem);
+        }
+        return arrItems;
+    }
 
+    const deleteItem = function (id) {
+        for (let i in arrItems) {
+            if (id === arrItems[i].id) arrItems.splice(i, 1);
+        }
+    }
 
+    const levelUp = function () {
+        level++;
+        time = level + timeLevelDiff;
+    }
 
+    const checkStatus = function () {
+        if (arrItems.length === 0) return 1;
+        if (time === 0) {
+            if (arrItems.length === 0) return 1;
+            else return 2;
+        }
+    }
 
+    const changeTime = () => time--;
 
+    const getArr = () => arrItems;
 
+    const getTime = () => time;
 
+    const getNumOfItems = () => arrItems.length;
 
+    const getLevel = () => level;
 
-    // Create Array of Items
-    const createArrayOfItems = (item) => arrItems.push(item);
+    const getImgAlt = () => imgAlt;
 
-
-
-
-
-
+    const getMessage = () => message;
 
     return {
         createItem,
-        createArrayOfItems
-
-
-
-
+        createArrayOfItems,
+        deleteItem,
+        levelUp,
+        changeTime,
+        checkStatus,
+        getTime,
+        getLevel,
+        getArr,
+        getNumOfItems,
+        getImgAlt,
+        getMessage,
     }
-
 }
-
-
-
-
-
-
-
-
-

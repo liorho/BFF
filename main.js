@@ -1,47 +1,47 @@
 const game = Game();
 const render = Render();
+let playing;
+let status;
 
 
-let a = game.createItem(3);
-game.createArrayOfItems(a);
-let b = game.createItem(3);
-game.createArrayOfItems(b);
-let c = game.createItem(3);
-game.createArrayOfItems(c);
+const intervalFunc = function () {
+    status = game.checkStatus();
+    if (status===1) playGame();
+    if (status===2) {
+        clearInterval(playing);
+        render.renderGameOver();
+    }
+    if (!status==1) render.renderTimer(game.getTime());
+    if (!status==1) game.changeTime();
+}
 
+const playGame = function () {
+    game.levelUp();
+    game.createArrayOfItems(game.getLevel());
+    setTimeout(() => {render.renderNoItems(game.getNumOfItems(), game.getImgAlt())}, 1000); ;
+    render.renderStart(game.getArr(), game.getMessage());
+    setTimeout(() => {render.renderLevel(game.getLevel())}, 1000); 
+    setTimeout (()=>{render.renderAllItems(game.getArr())}, 1000); 
+}
 
-render.createItemDisplay(a);
-render.createItemDisplay(b);
-render.createItemDisplay(c);
-// render.createItemDisplay(a);
+const startGame = function () {
+    playing = setInterval(intervalFunc, 1000);
+    playGame();
+}
 
-console.log(a);
-console.log(b);
-console.log(c);
+const restartGame = () => window.location.reload(true);
 
+// **************** RUN PROGRAM **********************
 
+render.renderStart(game.getArr);
 
+$("#start").click(startGame);
 
-
-
-$("#capsule").on("click", "img", function () { 
+$("#capsule").on("click", "img", function () {
+    let index = $(this).data("id");
+    game.deleteItem(index);
+    render.renderNoItems(game.getNumOfItems(), game.getImgAlt());
     $(this).remove();
-    
 });
 
-
-// ***************** Program ****************
-
-
-
-
-// Start key -> rendering
-
-// logic - pushing burger in array
-//rendering timer + burgers + noItems + level
-
-// on click - deleting from array
-// rendering
-
-// 
-
+$("body").on("click", "#gameOver", (restartGame));
